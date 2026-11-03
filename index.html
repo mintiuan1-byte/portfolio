@@ -518,6 +518,23 @@ dialog.help::backdrop { background: rgba(0,0,0,.5); }
 .slide .sz i.t { height: 14%; }
 .slide .sz i.t span { bottom: 5px; }
 
+/* sound like Instagram: muted by default, tap the video or the speaker */
+.snd { position: absolute; right: 12px; bottom: 34px; z-index: 5; width: 32px; height: 32px; border-radius: 50%; border: 0; padding: 0;
+  background: rgba(0,0,0,.55); color: #fff; display: grid; place-items: center; cursor: pointer; }
+.snd svg { width: 17px; height: 17px; grid-area: 1 / 1; }
+.snd .i-on, .flash .i-on { display: none; }
+.snd[aria-pressed="true"] .i-on, .flash.on .i-on { display: block; }
+.snd[aria-pressed="true"] .i-off, .flash.on .i-off { display: none; }
+.flash { position: absolute; left: 50%; top: 50%; z-index: 5; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%;
+  background: rgba(0,0,0,.55); color: #fff; display: grid; place-items: center; opacity: 0; transform: scale(.8); pointer-events: none; transition: opacity .2s, transform .2s; }
+.flash svg { width: 30px; height: 30px; grid-area: 1 / 1; }
+.flash.show { opacity: 1; transform: none; }
+.tapplay { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 5; display: none; align-items: center; gap: 8px;
+  background: rgba(0,0,0,.6); color: #fff; font: 600 13px var(--body); padding: 12px 16px; border-radius: 999px; pointer-events: none; }
+.tapplay svg { width: 18px; height: 18px; }
+.slide.blocked .tapplay { display: inline-flex; }
+.slide .side { bottom: 120px; }
+
 </style>
 </head>
 <body>
@@ -556,109 +573,154 @@ dialog.help::backdrop { background: rgba(0,0,0,.5); }
 </div></section>
 <section class="block" id="feed"><div class="wrap feedsim">
   <div class="feedsim-text">
-    <div class="block-head"><p class="eyebrow">Try it <b>·</b> like your feed</p><h2>Scroll it like a real feed</h2><p>These ads were made for a thumb, not a desktop. Swipe the phone, double-tap to like, and switch on the safe zones to see where Instagram's buttons would sit.</p></div>
+    <div class="block-head"><p class="eyebrow">Try it <b>·</b> like your feed</p><h2>Scroll it like a real feed</h2><p>These ads were made for a thumb, not a desktop. Swipe the phone, tap for sound, double-tap to like, and switch on the safe zones to see where Instagram's buttons would sit.</p></div>
     <div class="ph-ctrls">
       <button class="btn" type="button" id="ph-up" aria-label="Previous ad">↑ Previous</button>
       <button class="btn solid" type="button" id="ph-down" aria-label="Next ad">Next ↓</button>
       <button class="btn small sz-toggle" type="button" aria-pressed="false">Show Meta safe zones</button>
     </div>
     <p class="ph-count mono" id="ph-count" aria-live="polite">1 / 15</p>
-    <p class="ph-hint mono">Keys: ↑ ↓ to scroll · L to like · S for safe zones</p>
+    <p class="ph-hint mono">Keys: ↑ ↓ to scroll · V for sound · L to like · S for safe zones</p>
   </div>
   <div class="phone" aria-label="Phone showing ads as a feed">
     <div class="ph-notch" aria-hidden="true"></div>
     <div class="ph-bar" aria-hidden="true"><span>9:41</span><span>Reels</span><span>●●●</span></div>
     <div class="ph-cue" id="ph-cue" aria-hidden="true">Scroll<svg viewBox="0 0 20 20"><path d="M5 7l5 6 5-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
     <div class="ph-screen" id="ph" tabindex="0"><article class="slide" data-i="0">
-  <video muted loop playsinline preload="none" poster="media/poster/me43d1718.webp" src="media/vid/me43d1718.mp4"></video>
+  <video muted loop playsinline webkit-playsinline preload="metadata" poster="media/poster/me43d1718.webp" src="media/vid/me43d1718.mp4"></video>
   <span class="sz" aria-hidden="true"><i class="t"><span>META UI · KEEP CLEAR</span></i><i class="b"><span>META UI · KEEP CLEAR</span></i></span>
   <div class="ov"><span class="acct"><b>Somnea</b> · Sponsored</span><p>Cinematic black-tank gym film, rim light and haze, ends on the logo.</p><span class="shop">Learn more <span aria-hidden="true">›</span></span></div>
   <div class="side"><button class="like" type="button" aria-label="Like this ad" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></button><span class="cnt" data-n="1200">1,200</span></div>
   <span class="burst" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></span>
+  <button class="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <span class="flash" aria-hidden="true"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+  <span class="tapplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>Tap to play</span>
 </article><article class="slide" data-i="1">
-  <video muted loop playsinline preload="none" poster="media/poster/m533765a0.webp" src="media/vid/m533765a0.mp4"></video>
+  <video muted loop playsinline webkit-playsinline preload="metadata" poster="media/poster/m533765a0.webp" src="media/vid/m533765a0.mp4"></video>
   <span class="sz" aria-hidden="true"><i class="t"><span>META UI · KEEP CLEAR</span></i><i class="b"><span>META UI · KEEP CLEAR</span></i></span>
   <div class="ov"><span class="acct"><b>Somnea</b> · Sponsored</span><p>AI UGC in the gym: stretch test, real wear, then the two-pack offer.</p><span class="shop">Learn more <span aria-hidden="true">›</span></span></div>
   <div class="side"><button class="like" type="button" aria-label="Like this ad" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></button><span class="cnt" data-n="9119">9,119</span></div>
   <span class="burst" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></span>
+  <button class="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <span class="flash" aria-hidden="true"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+  <span class="tapplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>Tap to play</span>
 </article><article class="slide" data-i="2">
-  <video muted loop playsinline preload="none" poster="media/poster/m720ce454.webp" src="media/vid/m720ce454.mp4"></video>
+  <video muted loop playsinline webkit-playsinline preload="metadata" poster="media/poster/m720ce454.webp" src="media/vid/m720ce454.mp4"></video>
   <span class="sz" aria-hidden="true"><i class="t"><span>META UI · KEEP CLEAR</span></i><i class="b"><span>META UI · KEEP CLEAR</span></i></span>
   <div class="ov"><span class="acct"><b>Motocross4u</b> · Sponsored</span><p>Product film for a kids&#x27; e-bike: spotlight reveal, detail close-ups, sunset jumps.</p><span class="shop">Learn more <span aria-hidden="true">›</span></span></div>
   <div class="side"><button class="like" type="button" aria-label="Like this ad" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></button><span class="cnt" data-n="17038">17,038</span></div>
   <span class="burst" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></span>
+  <button class="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <span class="flash" aria-hidden="true"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+  <span class="tapplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>Tap to play</span>
 </article><article class="slide" data-i="3">
-  <video muted loop playsinline preload="none" poster="media/poster/ma7207a1c.webp" src="media/vid/ma7207a1c.mp4"></video>
+  <video muted loop playsinline webkit-playsinline preload="metadata" poster="media/poster/ma7207a1c.webp" src="media/vid/ma7207a1c.mp4"></video>
   <span class="sz" aria-hidden="true"><i class="t"><span>META UI · KEEP CLEAR</span></i><i class="b"><span>META UI · KEEP CLEAR</span></i></span>
   <div class="ov"><span class="acct"><b>Windmill Air</b> · Sponsored</span><p>One take: a New York apartment freezes into an ice palace.</p><span class="shop">Learn more <span aria-hidden="true">›</span></span></div>
   <div class="side"><button class="like" type="button" aria-label="Like this ad" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></button><span class="cnt" data-n="24957">24,957</span></div>
   <span class="burst" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></span>
+  <button class="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <span class="flash" aria-hidden="true"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+  <span class="tapplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>Tap to play</span>
 </article><article class="slide" data-i="4">
-  <video muted loop playsinline preload="none" poster="media/poster/md38db3c5.webp" src="media/vid/md38db3c5.mp4"></video>
+  <video muted loop playsinline webkit-playsinline preload="metadata" poster="media/poster/md38db3c5.webp" src="media/vid/md38db3c5.mp4"></video>
   <span class="sz" aria-hidden="true"><i class="t"><span>META UI · KEEP CLEAR</span></i><i class="b"><span>META UI · KEEP CLEAR</span></i></span>
   <div class="ov"><span class="acct"><b>CardoMax</b> · Sponsored</span><p>60-second anime story with a lightning power-up and a readable pack.</p><span class="shop">Learn more <span aria-hidden="true">›</span></span></div>
   <div class="side"><button class="like" type="button" aria-label="Like this ad" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></button><span class="cnt" data-n="32876">32,876</span></div>
   <span class="burst" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></span>
+  <button class="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <span class="flash" aria-hidden="true"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+  <span class="tapplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>Tap to play</span>
 </article><article class="slide" data-i="5">
-  <video muted loop playsinline preload="none" poster="media/poster/m47f62de4.webp" src="media/vid/m47f62de4.mp4"></video>
+  <video muted loop playsinline webkit-playsinline preload="metadata" poster="media/poster/m47f62de4.webp" src="media/vid/m47f62de4.mp4"></video>
   <span class="sz" aria-hidden="true"><i class="t"><span>META UI · KEEP CLEAR</span></i><i class="b"><span>META UI · KEEP CLEAR</span></i></span>
   <div class="ov"><span class="acct"><b>Codex Labs</b> · Sponsored</span><p>83-second 3D story for a kids&#x27; eczema range: a mum, a toddler, calm skin.</p><span class="shop">Learn more <span aria-hidden="true">›</span></span></div>
   <div class="side"><button class="like" type="button" aria-label="Like this ad" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></button><span class="cnt" data-n="40795">40,795</span></div>
   <span class="burst" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></span>
+  <button class="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <span class="flash" aria-hidden="true"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+  <span class="tapplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>Tap to play</span>
 </article><article class="slide" data-i="6">
-  <video muted loop playsinline preload="none" poster="media/poster/m9cdedc92.webp" src="media/vid/m9cdedc92.mp4"></video>
+  <video muted loop playsinline webkit-playsinline preload="metadata" poster="media/poster/m9cdedc92.webp" src="media/vid/m9cdedc92.mp4"></video>
   <span class="sz" aria-hidden="true"><i class="t"><span>META UI · KEEP CLEAR</span></i><i class="b"><span>META UI · KEEP CLEAR</span></i></span>
   <div class="ov"><span class="acct"><b>CardoMax</b> · Sponsored</span><p>A lightning piñata bursts into energy sticks and a gift card.</p><span class="shop">Learn more <span aria-hidden="true">›</span></span></div>
   <div class="side"><button class="like" type="button" aria-label="Like this ad" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></button><span class="cnt" data-n="48714">48,714</span></div>
   <span class="burst" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></span>
+  <button class="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <span class="flash" aria-hidden="true"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+  <span class="tapplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>Tap to play</span>
 </article><article class="slide" data-i="7">
-  <video muted loop playsinline preload="none" poster="media/poster/m5e14b238.webp" src="media/vid/m5e14b238.mp4"></video>
+  <video muted loop playsinline webkit-playsinline preload="metadata" poster="media/poster/m5e14b238.webp" src="media/vid/m5e14b238.mp4"></video>
   <span class="sz" aria-hidden="true"><i class="t"><span>META UI · KEEP CLEAR</span></i><i class="b"><span>META UI · KEEP CLEAR</span></i></span>
   <div class="ov"><span class="acct"><b>Biomega</b> · Sponsored</span><p>60 fps hypermotion for an e-bike: macro details, riding, the city from above.</p><span class="shop">Learn more <span aria-hidden="true">›</span></span></div>
   <div class="side"><button class="like" type="button" aria-label="Like this ad" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></button><span class="cnt" data-n="8633">8,633</span></div>
   <span class="burst" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></span>
+  <button class="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <span class="flash" aria-hidden="true"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+  <span class="tapplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>Tap to play</span>
 </article><article class="slide" data-i="8">
-  <video muted loop playsinline preload="none" poster="media/poster/m8920be08.webp" src="media/vid/m8920be08.mp4"></video>
+  <video muted loop playsinline webkit-playsinline preload="metadata" poster="media/poster/m8920be08.webp" src="media/vid/m8920be08.mp4"></video>
   <span class="sz" aria-hidden="true"><i class="t"><span>META UI · KEEP CLEAR</span></i><i class="b"><span>META UI · KEEP CLEAR</span></i></span>
   <div class="ov"><span class="acct"><b>Blinds.com</b> · Sponsored</span><p>Explainer: fold back the rug, see the sun damage, bring the shade down.</p><span class="shop">Learn more <span aria-hidden="true">›</span></span></div>
   <div class="side"><button class="like" type="button" aria-label="Like this ad" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></button><span class="cnt" data-n="16552">16,552</span></div>
   <span class="burst" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></span>
+  <button class="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <span class="flash" aria-hidden="true"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+  <span class="tapplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>Tap to play</span>
 </article><article class="slide" data-i="9">
-  <video muted loop playsinline preload="none" poster="media/poster/mdb4d143c.webp" src="media/vid/mdb4d143c.mp4"></video>
+  <video muted loop playsinline webkit-playsinline preload="metadata" poster="media/poster/mdb4d143c.webp" src="media/vid/mdb4d143c.mp4"></video>
   <span class="sz" aria-hidden="true"><i class="t"><span>META UI · KEEP CLEAR</span></i><i class="b"><span>META UI · KEEP CLEAR</span></i></span>
   <div class="ov"><span class="acct"><b>Windmill Air</b> · Sponsored</span><p>A frost ripple from one window AC turns the whole street to winter.</p><span class="shop">Learn more <span aria-hidden="true">›</span></span></div>
   <div class="side"><button class="like" type="button" aria-label="Like this ad" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></button><span class="cnt" data-n="24471">24,471</span></div>
   <span class="burst" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></span>
+  <button class="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <span class="flash" aria-hidden="true"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+  <span class="tapplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>Tap to play</span>
 </article><article class="slide" data-i="10">
-  <video muted loop playsinline preload="none" poster="media/poster/m475e31c2.webp" src="media/vid/m475e31c2.mp4"></video>
+  <video muted loop playsinline webkit-playsinline preload="metadata" poster="media/poster/m475e31c2.webp" src="media/vid/m475e31c2.mp4"></video>
   <span class="sz" aria-hidden="true"><i class="t"><span>META UI · KEEP CLEAR</span></i><i class="b"><span>META UI · KEEP CLEAR</span></i></span>
   <div class="ov"><span class="acct"><b>CardoMax</b> · Sponsored</span><p>Three FREEs on a pearl slot machine, then the payout.</p><span class="shop">Learn more <span aria-hidden="true">›</span></span></div>
   <div class="side"><button class="like" type="button" aria-label="Like this ad" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></button><span class="cnt" data-n="32390">32,390</span></div>
   <span class="burst" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></span>
+  <button class="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <span class="flash" aria-hidden="true"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+  <span class="tapplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>Tap to play</span>
 </article><article class="slide" data-i="11">
-  <video muted loop playsinline preload="none" poster="media/poster/m41350cd2.webp" src="media/vid/m41350cd2.mp4"></video>
+  <video muted loop playsinline webkit-playsinline preload="metadata" poster="media/poster/m41350cd2.webp" src="media/vid/m41350cd2.mp4"></video>
   <span class="sz" aria-hidden="true"><i class="t"><span>META UI · KEEP CLEAR</span></i><i class="b"><span>META UI · KEEP CLEAR</span></i></span>
   <div class="ov"><span class="acct"><b>Solawave</b> · Sponsored</span><p>AI UGC testimonial for an LED face mask, filmed-on-a-phone feel.</p><span class="shop">Learn more <span aria-hidden="true">›</span></span></div>
   <div class="side"><button class="like" type="button" aria-label="Like this ad" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></button><span class="cnt" data-n="40309">40,309</span></div>
   <span class="burst" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></span>
+  <button class="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <span class="flash" aria-hidden="true"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+  <span class="tapplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>Tap to play</span>
 </article><article class="slide" data-i="12">
-  <video muted loop playsinline preload="none" poster="media/poster/m683ddd40.webp" src="media/vid/m683ddd40.mp4"></video>
+  <video muted loop playsinline webkit-playsinline preload="metadata" poster="media/poster/m683ddd40.webp" src="media/vid/m683ddd40.mp4"></video>
   <span class="sz" aria-hidden="true"><i class="t"><span>META UI · KEEP CLEAR</span></i><i class="b"><span>META UI · KEEP CLEAR</span></i></span>
   <div class="ov"><span class="acct"><b>Brulo Beer</b> · Sponsored</span><p>One continuous pour, foam rising in the glass.</p><span class="shop">Learn more <span aria-hidden="true">›</span></span></div>
   <div class="side"><button class="like" type="button" aria-label="Like this ad" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></button><span class="cnt" data-n="48228">48,228</span></div>
   <span class="burst" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></span>
+  <button class="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <span class="flash" aria-hidden="true"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+  <span class="tapplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>Tap to play</span>
 </article><article class="slide" data-i="13">
-  <video muted loop playsinline preload="none" poster="media/poster/m22434f03.webp" src="media/vid/m22434f03.mp4"></video>
+  <video muted loop playsinline webkit-playsinline preload="metadata" poster="media/poster/m22434f03.webp" src="media/vid/m22434f03.mp4"></video>
   <span class="sz" aria-hidden="true"><i class="t"><span>META UI · KEEP CLEAR</span></i><i class="b"><span>META UI · KEEP CLEAR</span></i></span>
   <div class="ov"><span class="acct"><b>Codex Labs</b> · Sponsored</span><p>Animatic cut from the 18-shot storyboard below.</p><span class="shop">Learn more <span aria-hidden="true">›</span></span></div>
   <div class="side"><button class="like" type="button" aria-label="Like this ad" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></button><span class="cnt" data-n="8147">8,147</span></div>
   <span class="burst" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></span>
+  <button class="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <span class="flash" aria-hidden="true"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+  <span class="tapplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>Tap to play</span>
 </article><article class="slide" data-i="14">
-  <video muted loop playsinline preload="none" poster="media/poster/mded8178c.webp" src="media/vid/mded8178c.mp4"></video>
+  <video muted loop playsinline webkit-playsinline preload="metadata" poster="media/poster/mded8178c.webp" src="media/vid/mded8178c.mp4"></video>
   <span class="sz" aria-hidden="true"><i class="t"><span>META UI · KEEP CLEAR</span></i><i class="b"><span>META UI · KEEP CLEAR</span></i></span>
   <div class="ov"><span class="acct"><b>LIFE/OS · my own app</b> · Sponsored</span><p>Trailer I cut for LIFE/OS, a planning app I built for myself.</p><span class="shop">Learn more <span aria-hidden="true">›</span></span></div>
   <div class="side"><button class="like" type="button" aria-label="Like this ad" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></button><span class="cnt" data-n="16066">16,066</span></div>
   <span class="burst" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.2 1.7-2 3.2-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg></span>
+  <button class="snd" type="button" aria-label="Turn sound on" aria-pressed="false"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <span class="flash" aria-hidden="true"><svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+  <span class="tapplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>Tap to play</span>
 </article></div>
   </div>
 </div></section>
@@ -1057,17 +1119,36 @@ dialog.help::backdrop { background: rgba(0,0,0,.5); }
     tlinks.map((a) => document.getElementById(a.getAttribute("href").slice(1))).filter(Boolean).forEach((t) => tio.observe(t));
   }
 
-  /* phone feed */
+  /* phone feed: autoplays muted like Instagram; tap for sound, double-tap to like */
   const ph = $("#ph");
-  let likeCurrent = () => {};
+  let likeCurrent = () => {}, toggleSound = () => {};
   if (ph) {
     const slides = $$(".slide", ph);
     const count = $("#ph-count");
-    let cur = 0, phoneOnScreen = false;
+    let cur = 0, phoneOnScreen = false, soundOn = false;
     const vid = (i) => $("video", slides[i]);
+    slides.forEach((s, i) => { const v = vid(i); v.muted = true; v.playsInline = true; });
+    const syncSound = () => {
+      $$(".snd", ph).forEach((b) => { b.setAttribute("aria-pressed", String(soundOn)); b.setAttribute("aria-label", soundOn ? "Turn sound off" : "Turn sound on"); });
+      slides.forEach((s, i) => { vid(i).muted = !soundOn; });
+    };
+    const tryPlay = (s, v) => {
+      v.muted = !soundOn;
+      const p = v.play();
+      if (p && p.then) p.then(() => s.classList.remove("blocked")).catch(() => {
+        if (soundOn) {
+          // sound needs a fresh tap after scrolling on some phones: fall back to muted
+          soundOn = false; syncSound();
+          v.play().then(() => s.classList.remove("blocked")).catch(() => s.classList.add("blocked"));
+        } else {
+          s.classList.add("blocked");   // Low Power Mode, data saver: wait for a tap
+        }
+      });
+    };
     const playCurrent = () => slides.forEach((s, i) => {
       const v = vid(i);
-      if (i === cur && phoneOnScreen && !reduce) { v.preload = "auto"; v.play().catch(() => {}); } else v.pause();
+      if (i === cur && phoneOnScreen) tryPlay(s, v);
+      else { v.pause(); if (i === cur + 1) v.preload = "auto"; }
     });
     const inner = new IntersectionObserver((es) => es.forEach((e) => {
       if (e.isIntersecting && e.intersectionRatio > 0.6) {
@@ -1078,13 +1159,37 @@ dialog.help::backdrop { background: rgba(0,0,0,.5); }
     }), { root: ph, threshold: [0, 0.6, 1] });
     slides.forEach((s) => inner.observe(s));
     new IntersectionObserver((es) => { phoneOnScreen = es[0].isIntersecting; playCurrent(); }, { threshold: 0.25 }).observe(ph);
+    // backup for browsers that delay those callbacks: check on scroll, touch and when the tab comes back
+    let kickT = 0;
+    const kick = () => {
+      if (Date.now() - kickT < 400) return;
+      kickT = Date.now();
+      const r = ph.getBoundingClientRect();
+      const on = r.bottom > innerHeight * 0.2 && r.top < innerHeight * 0.8;
+      if (on !== phoneOnScreen) { phoneOnScreen = on; playCurrent(); }
+      else if (on && vid(cur).paused && !slides[cur].classList.contains("blocked")) playCurrent();
+    };
+    ["scroll", "touchstart", "pointerdown"].forEach((ev) => addEventListener(ev, kick, { passive: true }));
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) kick(); });
+
+    toggleSound = () => {
+      soundOn = !soundOn;
+      syncSound();
+      const s = slides[cur], v = vid(cur), f = $(".flash", s);
+      f.classList.toggle("on", soundOn);
+      f.classList.add("show");
+      clearTimeout(f._t);
+      f._t = setTimeout(() => f.classList.remove("show"), 650);
+      // a tap is a user gesture, so this also starts a video the phone refused to autoplay
+      v.play().then(() => s.classList.remove("blocked")).catch(() => {});
+    };
+
     const step = (d) => {
       const i = Math.max(0, Math.min(slides.length - 1, cur + d));
       ph.scrollTo({ top: i * ph.clientHeight, behavior: smooth });
     };
     const cue = $("#ph-cue");
-    const hideCue = () => cue?.classList.add("gone");
-    ph.addEventListener("scroll", () => { if (ph.scrollTop > 20) hideCue(); }, { passive: true });
+    ph.addEventListener("scroll", () => { if (ph.scrollTop > 20) cue?.classList.add("gone"); }, { passive: true });
     $("#ph-up")?.addEventListener("click", () => step(-1));
     $("#ph-down")?.addEventListener("click", () => step(1));
     ph.addEventListener("keydown", (e) => {
@@ -1107,12 +1212,13 @@ dialog.help::backdrop { background: rgba(0,0,0,.5); }
         setLike(s, on);
         if (on) burst(s);
       });
-      s.addEventListener("dblclick", () => { setLike(s, true); burst(s); });
-      let last = 0;
-      s.addEventListener("touchend", (e) => {
-        const t = Date.now();
-        if (t - last < 300) { setLike(s, true); burst(s); e.preventDefault(); }
-        last = t;
+      $(".snd", s).addEventListener("click", (e) => { e.stopPropagation(); toggleSound(); });
+      // one tap = sound on/off, two quick taps = like (same with a mouse or a finger)
+      let timer = null;
+      s.addEventListener("click", (e) => {
+        if (e.target.closest("button")) return;
+        if (timer) { clearTimeout(timer); timer = null; setLike(s, true); burst(s); return; }
+        timer = setTimeout(() => { timer = null; toggleSound(); }, 260);
       });
     });
     likeCurrent = () => {
@@ -1131,7 +1237,8 @@ dialog.help::backdrop { background: rgba(0,0,0,.5); }
     const k = e.key.toLowerCase();
     const go = (id) => document.getElementById(id)?.scrollIntoView({ behavior: smooth });
     const map = { w: "work", f: "feed", m: "motion", a: "archive", p: "process" };
-    if (map[k]) go(map[k]);
+    if (k === "v") toggleSound();
+    else if (map[k]) go(map[k]);
     else if (k === "r") randomAd();
     else if (k === "s") $(".sz-toggle")?.click();
     else if (k === "t") toggleTheme();
